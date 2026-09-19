@@ -15,6 +15,8 @@ Setup:
 Then visit http://127.0.0.1:8000 for the website,
 and http://127.0.0.1:8000/mcp is the MCP endpoint (Streamable HTTP).
 """
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -123,8 +125,9 @@ def api_get_timesheet(employee_name: str, start_date: str = None, end_date: str 
 
 @app.get("/")
 def serve_index():
-    return FileResponse("static/index.html")
+    return FileResponse(static_dir / "index.html")
 
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+static_dir = Path(__file__).parent / "static"
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
 app.mount("/mcp", mcp_app)
